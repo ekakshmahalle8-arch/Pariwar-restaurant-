@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pariwar Restaurant</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #2d6a4f;
+    --green-light: #40916c;
+    --green-pale: #d8f3dc;
+    --orange: #e76f1e;
+    --orange-light: #f4a261;
+    --cream: #fdf6ec;
+    --dark: #1a1a1a;
+    --gray: #6b7280;
+    --white: #ffffff;
+    --shadow: 0 4px 24px rgba(0,0,0,0.10);
+    --radius: 16px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--dark);
+    min-height: 100vh;
+    padding-bottom: 220px;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: linear-gradient(135deg, var(--green) 60%, var(--green-light) 100%);
+    color: white;
+    text-align: center;
+    padding: 36px 20px 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    width: 300px; height: 300px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 50%;
+    top: -120px; right: -80px;
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    width: 180px; height: 180px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 50%;
+    bottom: -60px; left: -40px;
+  }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem;
+    font-weight: 900;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+  header p {
+    font-size: 0.95rem;
+    opacity: 0.85;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  /* ── CATEGORY TABS ── */
+  .tabs-wrapper {
+    background: white;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .tabs {
+    display: flex;
+    overflow-x: auto;
+    gap: 4px;
+    padding: 10px 12px;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    flex-shrink: 0;
+    padding: 7px 16px;
+    border-radius: 50px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    background: #f3f4f6;
+    color: var(--gray);
+    transition: all 0.2s;
+    letter-spacing: 0.3px;
+  }
+  .tab.active, .tab:hover {
+    background: var(--green);
+    color: white;
+  }
+
+  /* ── SECTION ── */
+  .container { padding: 18px 14px 0; max-width: 640px; margin: 0 auto; }
+
+  .section { margin-bottom: 28px; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--green);
+  }
+  .section-line {
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(to right, var(--green-pale), transparent);
+    border-radius: 2px;
+  }
+  .section-emoji { font-size: 1.3rem; }
+
+  /* ── MENU ITEM ── */
+  .menu-item {
+    background: white;
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--shadow);
+    transition: transform 0.15s, box-shadow 0.15s;
+    border-left: 4px solid transparent;
+  }
+  .menu-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.13);
+    border-left-color: var(--orange);
+  }
+  .item-info { flex: 1; }
+  .item-name {
+    font-weight: 600;
+    font-size: 0.97rem;
+    color: var(--dark);
+    margin-bottom: 3px;
+  }
+  .item-price {
+    font-size: 0.88rem;
+    color: var(--orange);
+    font-weight: 700;
+  }
+
+  /* ── ADD / QTY BUTTON ── */
+  .add-btn {
+    background: var(--orange);
+    color: white;
+    border: none;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    font-size: 1.3rem;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.2s, transform 0.1s;
+    margin-left: 10px;
+  }
+  .add-btn:hover { background: #c95e10; transform: scale(1.08); }
+
+  .qty-ctrl {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: 10px;
+  }
+  .qty-btn {
+    background: var(--green-pale);
+    color: var(--green);
+    border: none;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    transition: background 0.2s;
+  }
+  .qty-btn:hover { background: var(--green-light); color: white; }
+  .qty-num {
+    font-weight: 700;
+    font-size: 1rem;
+    min-width: 18px;
+    text-align: center;
+    color: var(--dark);
+  }
+
+  /* ── CART ── */
+  .cart-panel {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: white;
+    box-shadow: 0 -6px 30px rgba(0,0,0,0.14);
+    border-radius: 20px 20px 0 0;
+    z-index: 200;
+    max-width: 640px;
+    margin: 0 auto;
+    transition: max-height 0.35s ease;
+    overflow: hidden;
+  }
+  .cart-collapsed { max-height: 70px; }
+  .cart-expanded { max-height: 480px; }
+
+  .cart-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    cursor: pointer;
+  }
+  .cart-bar-left { display: flex; align-items: center; gap: 12px; }
+  .cart-icon { font-size: 1.4rem; }
+  .cart-count-badge {
+    background: var(--orange);
+    color: white;
+    font-size: 0.78rem;
+    font-weight: 700;
+    border-radius: 50px;
+    padding: 2px 9px;
+  }
+  .cart-total-mini {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--green);
+  }
+  .cart-toggle-icon { font-size: 1.1rem; color: var(--gray); }
+
+  .cart-body { padding: 0 20px 16px; overflow-y: auto; max-height: 300px; }
+  .cart-items-list { margin-bottom: 12px; }
+  .cart-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 7px 0;
+    border-bottom: 1px solid #f3f4f6;
+    font-size: 0.9rem;
+  }
+  .cart-row-name { flex: 1; color: var(--dark); font-weight: 500; }
+  .cart-row-qty { color: var(--gray); margin: 0 12px; }
+  .cart-row-price { font-weight: 700; color: var(--orange); }
+
+  .cart-inputs { display: flex; gap: 10px; margin-bottom: 12px; }
+  .cart-inputs input {
+    flex: 1;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border 0.2s;
+  }
+  .cart-inputs input:focus { border-color: var(--green); }
+
+  .order-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, var(--green), var(--green-light));
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: opacity 0.2s, transform 0.1s;
+  }
+  .order-btn:hover { opacity: 0.93; transform: scale(0.99); }
+  .empty-cart {
+    text-align: center;
+    color: var(--gray);
+    font-size: 0.88rem;
+    padding: 10px 0;
+  }
+
+  /* animate items in */
+  .menu-item { animation: fadeUp 0.3s ease both; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🍽 Pariwar Restaurant</h1>
+  <p>Delicious Food · Happy Family</p>
+</header>
+
+<div class="tabs-wrapper">
+  <div class="tabs" id="tabs"></div>
+</div>
+
+<div class="container" id="menuContainer"></div>
+
+<!-- CART -->
+<div class="cart-panel cart-collapsed" id="cartPanel">
+  <div class="cart-bar" onclick="toggleCart()">
+    <div class="cart-bar-left">
+      <span class="cart-icon">🛒</span>
+      <span class="cart-count-badge" id="cartBadge">0 items</span>
+      <span class="cart-total-mini" id="cartTotalMini">₹0</span>
+    </div>
+    <span class="cart-toggle-icon" id="cartToggleIcon">▲</span>
+  </div>
+  <div class="cart-body" id="cartBody" style="display:none">
+    <div class="cart-items-list" id="cartList">
+      <div class="empty-cart">No items yet. Add something tasty!</div>
+    </div>
+    <div class="cart-inputs">
+      <input type="text" id="custName" placeholder="Your Name" />
+      <input type="text" id="tableNo"  placeholder="Table No." />
+    </div>
+    <button class="order-btn" onclick="placeOrder()">
+      <span>📲</span> Send Order via WhatsApp
+    </button>
+  </div>
+</div>
+
+<script>
+const MENU = [
+  {
+    category: "Mutton", emoji: "🍖",
+    items: [
+      { name: "Mutton Roghan Josh",       price: 350 },
+      { name: "Mutton Do Pyaza",          price: 350 },
+      { name: "Tawa Mutton",              price: 350 },
+      { name: "Mutton Palak",             price: 350 },
+      { name: "Kadahi Mutton",            price: 350 },
+    ]
+  },
+  {
+    category: "Indian Bread", emoji: "🫓",
+    items: [
+      { name: "Missi Roti",               price: 10 },
+      { name: "Tandoori Roti",            price: 10 },
+      { name: "Butter Roti",              price: 15 },
+      { name: "Laccha Prantha",           price: 25 },
+      { name: "Plain Naan",               price: 30 },
+      { name: "Butter Naan",              price: 35 },
+      { name: "Garlic Naan",              price: 40 },
+      { name: "Cheese Naan",             price: 45 },
+      { name: "Tandoori Basket",          price: 70 },
+      { name: "Aloo Paratha",             price: 40 },
+      { name: "Mix Paratha",              price: 55 },
+      { name: "Paneer Paratha",           price: 70 },
+      { name: "Stuff Kulcha",             price: 80 },
+      { name: "Amritsar Kulcha",          price: 80 },
+      { name: "Amritsar Kulcha With Gravy", price: 150 },
+      { name: "Keema Paratha",            price: 90 },
+      { name: "Keema Paratha With Gravy", price: 150 },
+    ]
+  },
+  {
+    category: "Accompaniments", emoji: "🥗",
+    items: [
+      { name: "Roasted Papad",            price: 30 },
+      { name: "Masala Papad",             price: 60 },
+      { name: "Plain Curd",               price: 80 },
+      { name: "Mix Raita",                price: 80 },
+      { name: "Pineapple Raita",          price: 80 },
+      { name: "Aloo Raita",               price: 80 },
+    ]
+  },
+  {
+    category: "Salad", emoji: "🥙",
+    items: [
+      { name: "Green Salad",              price: 60 },
+      { name: "Cucumber Salad",           price: 60 },
+      { name: "Finger Salad",             price: 90 },
+      { name: "Russian Salad",            price: 120 },
+    ]
+  },
+  {
+    category: "Rice & Biryani", emoji: "🍚",
+    items: [
+      { name: "Steam Rice",               price: 80 },
+      { name: "Jeera Rice",               price: 100 },
+      { name: "Peas Pulao",               price: 120 },
+      { name: "Veg Pula",                 price: 120 },
+      { name: "Veg Biryani",              price: 150 },
+      { name: "Chicken Biryani",          price: 200 },
+      { name: "Chicken Biryani Boneless", price: 240 },
+    ]
+  },
+];
+
+// ── Build cart state ──
+let cart = {};
+
+// ── Render tabs ──
+function renderTabs() {
+  const tabs = document.getElementById('tabs');
+  MENU.forEach((cat, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'tab' + (i === 0 ? ' active' : '');
+    btn.textContent = cat.emoji + ' ' + cat.category;
+    btn.onclick = () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      const el = document.getElementById('section-' + i);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+    tabs.appendChild(btn);
+  });
+}
+
+// ── Render menu ──
+function renderMenu() {
+  const container = document.getElementById('menuContainer');
+  container.innerHTML = '';
+  MENU.forEach((cat, ci) => {
+    const section = document.createElement('div');
+    section.className = 'section';
+    section.id = 'section-' + ci;
+
+    const header = document.createElement('div');
+    header.className = 'section-header';
+    header.innerHTML = `
+      <span class="section-emoji">${cat.emoji}</span>
+      <span class="section-title">${cat.category}</span>
+      <div class="section-line"></div>`;
+    section.appendChild(header);
+
+    cat.items.forEach((item, ii) => {
+      const key = ci + '-' + ii;
+      const div = document.createElement('div');
+      div.className = 'menu-item';
+      div.style.animationDelay = (ii * 0.04) + 's';
+      div.innerHTML = `
+        <div class="item-info">
+          <div class="item-name">${item.name}</div>
+          <div class="item-price">₹${item.price}</div>
+        </div>
+        <div id="ctrl-${key}"></div>`;
+      section.appendChild(div);
+    });
+
+    container.appendChild(section);
+  });
+  updateAllControls();
+}
+
+function updateAllControls() {
+  MENU.forEach((cat, ci) => {
+    cat.items.forEach((item, ii) => {
+      const key = ci + '-' + ii;
+      const ctrl = document.getElementById('ctrl-' + key);
+      if (!ctrl) return;
+      const qty = cart[key] ? cart[key].qty : 0;
+      if (qty === 0) {
+        ctrl.innerHTML = `<button class="add-btn" onclick="changeQty('${key}',${ci},${ii},1)">+</button>`;
+      } else {
+        ctrl.innerHTML = `
+          <div class="qty-ctrl">
+            <button class="qty-btn" onclick="changeQty('${key}',${ci},${ii},-1)">−</button>
+            <span class="qty-num">${qty}</span>
+            <button class="qty-btn" onclick="changeQty('${key}',${ci},${ii},1)">+</button>
+          </div>`;
+      }
+    });
+  });
+}
+
+function changeQty(key, ci, ii, delta) {
+  const item = MENU[ci].items[ii];
+  if (!cart[key]) cart[key] = { name: item.name, price: item.price, qty: 0 };
+  cart[key].qty += delta;
+  if (cart[key].qty <= 0) delete cart[key];
+  updateAllControls();
+  updateCartUI();
+}
+
+// ── Cart UI ──
+let cartOpen = false;
+
+function toggleCart() {
+  const keys = Object.keys(cart);
+  if (keys.length === 0 && !cartOpen) return;
+  cartOpen = !cartOpen;
+  const panel = document.getElementById('cartPanel');
+  const body  = document.getElementById('cartBody');
+  const icon  = document.getElementById('cartToggleIcon');
+  panel.className = 'cart-panel ' + (cartOpen ? 'cart-expanded' : 'cart-collapsed');
+  body.style.display = cartOpen ? 'block' : 'none';
+  icon.textContent = cartOpen ? '▼' : '▲';
+}
+
+function updateCartUI() {
+  const keys = Object.keys(cart);
+  const totalQty = keys.reduce((s, k) => s + cart[k].qty, 0);
+  const totalPrice = keys.reduce((s, k) => s + cart[k].price * cart[k].qty, 0);
+
+  document.getElementById('cartBadge').textContent = totalQty + (totalQty === 1 ? ' item' : ' items');
+  document.getElementById('cartTotalMini').textContent = '₹' + totalPrice;
+
+  const list = document.getElementById('cartList');
+  if (keys.length === 0) {
+    list.innerHTML = '<div class="empty-cart">No items yet. Add something tasty!</div>';
+    if (cartOpen) toggleCart();
+    return;
+  }
+
+  list.innerHTML = '';
+  keys.forEach(k => {
+    const it = cart[k];
+    const row = document.createElement('div');
+    row.className = 'cart-row';
+    row.innerHTML = `
+      <span class="cart-row-name">${it.name}</span>
+      <span class="cart-row-qty">×${it.qty}</span>
+      <span class="cart-row-price">₹${it.price * it.qty}</span>`;
+    list.appendChild(row);
+  });
+
+  // totals row
+  const tot = document.createElement('div');
+  tot.className = 'cart-row';
+  tot.innerHTML = `<span class="cart-row-name" style="font-weight:700">Total</span><span></span><span class="cart-row-price" style="color:var(--green);font-size:1.05rem">₹${totalPrice}</span>`;
+  list.appendChild(tot);
+
+  // auto-open if first item added
+  if (!cartOpen && totalQty > 0) {
+    cartOpen = true;
+    const panel = document.getElementById('cartPanel');
+    const body  = document.getElementById('cartBody');
+    const icon  = document.getElementById('cartToggleIcon');
+    panel.className = 'cart-panel cart-expanded';
+    body.style.display = 'block';
+    icon.textContent = '▼';
+  }
+}
+
+function placeOrder() {
+  const name  = document.getElementById('custName').value.trim();
+  const table = document.getElementById('tableNo').value.trim();
+  const keys  = Object.keys(cart);
+
+  if (!name)  { document.getElementById('custName').focus(); return; }
+  if (!table) { document.getElementById('tableNo').focus();  return; }
+  if (keys.length === 0) { alert('Please add items first!'); return; }
+
+  const totalPrice = keys.reduce((s, k) => s + cart[k].price * cart[k].qty, 0);
+  let msg = `*🍽 New Order — Pariwar Restaurant*%0A`;
+  msg += `👤 *Name:* ${name}%0A`;
+  msg += `🪑 *Table:* ${table}%0A%0A`;
+  msg += `*Items Ordered:*%0A`;
+  keys.forEach(k => {
+    const it = cart[k];
+    msg += `• ${it.name} ×${it.qty} — ₹${it.price * it.qty}%0A`;
+  });
+  msg += `%0A*Total: ₹${totalPrice}*`;
+
+  const phone = "917038022404";
+  window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
+}
+
+// ── Init ──
+renderTabs();
+renderMenu();
+</script>
+</body>
+</html>
